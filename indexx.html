@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <title>Sistema Solar VR</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+    <!-- PANTALLA DE CARGA -->
+    <div id="pantalla-carga">
+      <div class="contenedor-carga">
+        <h2 id="texto-loading">CARGANDO SISTEMA SOLAR</h2>
+        <div class="barra-base">
+          <div id="barra-progreso"></div>
+        </div>
+        <p id="porcentaje">0%</p>
+      </div>
+    </div>
+
+    <!-- ESCENA 3D / VR -->
+    <a-scene webxr="optionalFeatures: hit-test;">
+
+      <!-- RECURSOS (Imágenes locales y Sonidos) -->
+      <a-assets>
+        <img id="tex-marte" src="marte.jpg">
+        <img id="tex-mercurio" src="mercurio.jpg">
+        <img id="tex-venus" src="venus.jpg">
+        <img id="tex-jupiter" src="jupiter.jpg">
+        <img id="tex-saturno" src="saturno.jpg">
+        <img id="tex-urano" src="urano.jpg">
+        <img id="tex-neptuno" src="neptuno.jpg">
+        <img id="tex-anillo de saturno" src="anillo-saturno.jpg">
+        <img id="tex-sol" src="sol.jpg">
+        <img id="tex-tierra" src="tierra.jpg">
+        <audio id="snd-correcto" src="sonidos/correcto.mp3" preload="auto"></audio>
+        <audio id="snd-incorrecto" src="sonidos/incorrecto.mp3" preload="auto"></audio>
+      </a-assets>
+
+      <!-- ILUMINACIÓN DE LA ESCENA -->
+      <a-light type="ambient" color="#ffffff" intensity="0.5"></a-light>
+      <a-light type="point" position="-14 1.6 0" intensity="2.5" color="#ffaa44"></a-light>
+
+      <!-- FONDO GALÁCTICO NATIVO (Garantizado: Nunca más negro) -->
+      <a-sky color="#020208"></a-sky>
+
+      <!-- CAMPO DE ESTRELLAS CREADO CON PUNTOS 3D (Carga instantánea) -->
+      <a-entity id="estrellas">
+        <!-- Generación visual de estrellas distribuídas -->
+        <a-sphere position="10 15 -20" radius="0.05" color="#ffffff" material="shader: flat"></a-sphere>
+        <a-sphere position="-15 20 -10" radius="0.08" color="#aaccff" material="shader: flat"></a-sphere>
+        <a-sphere position="5 -10 -15" radius="0.06" color="#ffffff" material="shader: flat"></a-sphere>
+        <a-sphere position="-20 -5 15" radius="0.07" color="#ffddaa" material="shader: flat"></a-sphere>
+        <a-sphere position="18 8 12" radius="0.05" color="#ffffff" material="shader: flat"></a-sphere>
+        <a-sphere position="-8 25 5" radius="0.06" color="#ffffff" material="shader: flat"></a-sphere>
+        <a-sphere position="0 12 -25" radius="0.09" color="#66ccff" material="shader: flat"></a-sphere>
+      </a-entity>
+
+      <!-- CÁMARA DEL JUGADOR (Inicia frente al inicio del recorrido con vista cómoda) -->
+      <a-entity id="jugador" position="-9 1.6 3.5">
+        <a-camera id="camara">
+          <a-cursor fuse="true" fuse-timeout="1800" color="yellow" scale="0.5 0.5 0.5" raycaster="objects: .interactivo"></a-cursor>
+
+          <!-- PUNTUAJE: Ubicado arriba a la izquierda del campo visual -->
+          <a-text id="texto-puntaje" value="PUNTOS: 0" position="-1.8 1.1 -1.4" color="#00ffcc" scale="0.4 0.4 0.4"></a-text>
+        </a-camera>
+      </a-entity>
+
+      <!-- 0. EL SOL -->
+      <a-sphere id="sol" radius="2.5" src="#tex-sol" position="-14 1.6 0" material="shader: flat; emissive: #ff4400" animation="property: rotation; to: 0 360 0; loop: true; dur: 40000; easing: linear">
+        <a-text value="SOL" position="0 3 0" align="center" color="#ffcc00" scale="1.5 1.5 1.5"></a-text>
+      </a-sphere>
+
+      <!-- 1. MERCURIO -->
+      <a-entity id="nodo-mercurio" position="-9 1.6 0">
+        <a-sphere id="mercurio" class="interactivo" radius="0.3" src="#tex-mercurio" material="roughness: 0.9" animation="property: rotation; to: 0 360 0; loop: true; dur: 12000; easing: linear"></a-sphere>
+        <a-text value="MERCURIO" position="0 0.6 0" align="center" color="white" scale="0.7 0.7 0.7"></a-text>
+      </a-entity>
+
+      <!-- 2. VENUS -->
+      <a-entity id="nodo-venus" position="-6 1.6 0">
+        <a-sphere id="venus" class="interactivo" radius="0.45" src="#tex-venus" material="roughness: 0.5" animation="property: rotation; to: 0 360 0; loop: true; dur: 16000; easing: linear"></a-sphere>
+        <a-text value="VENUS" position="0 0.7 0" align="center" color="white" scale="0.8 0.8 0.8"></a-text>
+      </a-entity>
+
+      <!-- 3. TIERRA -->
+      <a-entity id="nodo-tierra" position="-3 1.6 0">
+        <a-sphere id="tierra" class="interactivo" radius="0.5" src="#tex-tierra" material="roughness: 0.6" animation="property: rotation; to: 0 360 0; loop: true; dur: 20000; easing: linear"></a-sphere>
+        <a-text value="TIERRA" position="0 0.8 0" align="center" color="white" scale="0.8 0.8 0.8"></a-text>
+      </a-entity>
+
+      <!-- 4. MARTE (Usa tu imagen local marte.jpg) -->
+      <a-entity id="nodo-marte" position="0 1.6 0">
+        <a-sphere id="marte" class="interactivo" radius="0.4" src="#tex-marte" material="roughness: 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 22000; easing: linear"></a-sphere>
+        <a-text value="MARTE" position="0 0.7 0" align="center" color="white" scale="0.8 0.8 0.8"></a-text>
+      </a-entity>
+
+      <!-- 5. JÚPITER -->
+      <a-entity id="nodo-jupiter" position="4 1.6 0">
+        <a-sphere id="jupiter" class="interactivo" radius="1.1" src="#tex-jupiter" material="roughness: 0.7" animation="property: rotation; to: 0 360 0; loop: true; dur: 25000; easing: linear"></a-sphere>
+        <a-text value="JUPITER" position="0 1.5 0" align="center" color="white" scale="1 1 1"></a-text>
+      </a-entity>
+
+      <!-- 6. SATURNO (Con Anillos) -->
+      <a-entity id="nodo-saturno" position="8 1.6 0">
+        <a-sphere id="saturno" class="interactivo" radius="0.85" src="#tex-saturno" material="roughness: 0.6" animation="property: rotation; to: 0 360 0; loop: true; dur: 28000; easing: linear"></a-sphere>
+        <a-ring radius-inner="1.1" radius-outer="1.7" src="#tex-anillo de saturno" rotation="75 20 0" material="side: double; opacity: 0.8"></a-ring>
+        <a-text value="SATURNO" position="0 1.3 0" align="center" color="white" scale="0.9 0.9 0.9"></a-text>
+      </a-entity>
+
+      <!-- 7. URANO -->
+      <a-entity id="nodo-urano" position="12 1.6 0">
+        <a-sphere id="urano" class="interactivo" radius="0.65" src="#tex-urano" material="roughness: 0.4" animation="property: rotation; to: 0 360 0; loop: true; dur: 32000; easing: linear"></a-sphere>
+        <a-text value="URANO" position="0 1.0 0" align="center" color="white" scale="0.8 0.8 0.8"></a-text>
+      </a-entity>
+
+      <!-- 8. NEPTUNO -->
+      <a-entity id="nodo-neptuno" position="16 1.6 0">
+        <a-sphere id="neptuno" class="interactivo" radius="0.6" src="#tex-neptuno" material="roughness: 0.4" animation="property: rotation; to: 0 360 0; loop: true; dur: 35000; easing: linear"></a-sphere>
+        <a-text value="NEPTUNO" position="0 0.9 0" align="center" color="white" scale="0.8 0.8 0.8"></a-text>
+      </a-entity>
+
+      <!-- PANEL DE PREGUNTAS (HOLOGRAMA) -->
+      <a-plane id="panel-info" position="0 0 -1.3" width="1.4" height="0.9" color="#0a0a1a" material="opacity: 0.9" visible="false">
+        <a-text id="texto-panel" value="" color="white" align="center" width="1.2" position="0 0.2 0.01"></a-text>
+        <a-plane id="btn-a" class="interactivo" position="-0.3 -0.25 0.02" width="0.5" height="0.18" color="#e74c3c" visible="false">
+          <a-text id="txt-a" value="A" color="white" align="center" width="1" position="0 0 0.01"></a-text>
+        </a-plane>
+        <a-plane id="btn-b" class="interactivo" position="0.3 -0.25 0.02" width="0.5" height="0.18" color="#2ecc71" visible="false">
+          <a-text id="txt-b" value="B" color="white" align="center" width="1" position="0 0 0.01"></a-text>
+        </a-plane>
+      </a-plane>
+
+    </a-scene>
+
+    <script src="main.js"></script>
+  </body>
+</html>
+
